@@ -94,6 +94,7 @@
   let map = L.map('map', {
     center : [ -40.257362, -65.893394 ],
     zoom : 4,
+    attributionControl : false,
     // zoomControl : false,
     // dragging : false,
     // minZoom : 3,
@@ -101,7 +102,43 @@
   });
   let miPos;
   let miPosGeo;
+  L.control.zoom({
+    zoomInText: '<i class="fa fa-plus text-info text-center" style="line-height: 32px"></i>',
+    zoomOutText: '<i class="fa fa-minus text-info text-center" style="line-height: 32px"></i>',
+    position: 'bottomright'
+  }).addTo(map);
+  let tributo = L.control.attribution({
+    position : 'bottomleft'
+  }).addTo(map);
+  tributo.addAttribution('Krateros');
+  tributo.addAttribution('<a href="http://krateros-design.com/kitsune">Sitio web</a>');
+
+  L.control.scale({
+    position : 'bottomleft'
+  }).addTo(map);
+
   L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
+
+  let popupPersona = L.popup({
+    maxWidth: 1000,
+    keepInWiew: true
+  });
+  popupPersona.setLatLng([ -40.257362, -65.893394 ]);
+  // popupPersona.setContent(`
+  //   <img class="direct-chat-img" src="img/user1-128x128.jpg"></img><p>Hola mundo</p>
+  // `);
+  popupPersona.setContent(`
+  <div class="small-box bg-danger">
+    <div class="icon">
+      <i class="fa fa-coffee"></i>
+    </div>
+    <div class="inner">
+      <h3 class="text-warning">65</h3>
+      <p class="m-0">Geolocalización</p>
+    </div>
+  </div>
+  `);
+  map.openPopup(popupPersona);
 
   setInterval(function (){
     // map.locate();
@@ -167,7 +204,7 @@
     L.marker(e.latlng, {icon: L.AwesomeMarkers.icon({icon: 'star', prefix: 'fa', markerColor: 'red', spin:false}) })
     .addTo(map)
     .bindPopup(e.latlng.toString()+'<br/>'+
-     curtime.toString());
+     curtime.toString()).openPopup();
   });
 
   map.on("locationerror", function (e) {
