@@ -564,6 +564,32 @@
     map.setView(miPosGeo, 14);
   });
 
+  let controlDibujo = new L.Control.Draw();
+  controlDibujo.addTo(map)
+
+  map.addControl(new L.Control.Draw({
+    edit: {
+      featureGroup: drawnItems,
+      poly: {
+          allowIntersection: false
+      }
+    },
+    draw: {
+      polygon: {
+          allowIntersection: false,
+          showArea: true
+      }
+    }
+  }));
+
+  map.on(L.Draw.Event.CREATED, function (event) {
+    var layer = event.layer;
+    drawnItems.addLayer(layer);
+  });
+
+  L.control.layers(
+    { 'drawlayer': drawnItems }, { position: 'topleft', collapsed: false }
+  ).addTo(map);
 
 
 </script>
