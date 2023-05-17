@@ -26,7 +26,7 @@
       min-height: 100vh;
     }
     .ovHid{
-      overflow: hidden!important;
+/*      overflow: hidden!important;*/
     }
   </style>
 </head>
@@ -273,7 +273,21 @@
     // map.locate();
   }, 5000);
 
-  L.marker([-40.257362, -65.893394], {icon: L.AwesomeMarkers.icon({icon: 'star', prefix: 'fa', markerColor: 'cadetblue', spin:true}) }).addTo(map);
+  let marcadorCentro = L.marker([-40.257362, -65.893394], {
+    icon: L.AwesomeMarkers.icon({icon: 'star', prefix: 'fa', markerColor: 'cadetblue', spin:true}),
+    draggable: true
+
+  }).addTo(map);
+  marcadorCentro.on("dragend", function () {
+    console.log('se movio el punto centro');
+     marcadorCentro.setTooltipContent('El marcador se movio a: ' + marcadorCentro.getLatLng().toString() ).openTooltip();
+  });
+
+  let marcadorCentro2 = L.marker([-40.257362, -64.893394],{draggable:true}).addTo(map)
+  marcadorCentro2.on("dragend", function () {
+    console.log('se movio el punto centro 2');
+     marcadorCentro2.bindPopup('El marcador se movio a: ' + marcadorCentro.getLatLng().toString() ).openPopup();
+  });
 
   map.on("moveend", function () {
      console.log('getCenter', map.getCenter().toString());
@@ -296,13 +310,104 @@
 
   var awesomeIcons = ['font', 'cloud-download', 'medkit', 'github-alt', 'coffee', 'twitter', 'shopping-cart', 'tags', 'star'];
 
+  let polilineaVectores = [];
+  
+
+     let polyline = L.polyline(polilineaVectores, {color:'red'}).addTo(map);
   map.on("contextmenu", function (e) { //! boton derecho del mause
      var curtime = new Date();
      L.marker(e.latlng, {icon: L.AwesomeMarkers.icon({icon: 'coffee', prefix: 'fa', markerColor: 'red', spin:false}) })
      .addTo(map)
      .bindPopup(e.latlng.toString()+'<br/>'+
       curtime.toString());
+     polyline.addLatLng([e.latlng.lat,e.latlng.lng]);
+     // map.fitBounds(polyline.getBounds())
+     polilineaVectores.push([e.latlng.lat,e.latlng.lng]);
+     exportarArrayPoligono(polilineaVectores);
+     // polyline.redraw(polilineaVectores)
+     console.log(polilineaVectores);
   });
+
+  // [-34.918381721449165, -34.918381721449165], [-34.920026340114156, -34.920026340114156], [-34.92140640714219, -34.92140640714219], [-34.92100251931215, -34.92100251931215]
+
+
+  // [-34.91931430915507, -34.91931430915507], [-34.92046631731897, -34.92046631731897], [-34.92037860861853, -34.92037860861853]
+
+  // metodo de subtracción
+  // let poligono = L.polygon([
+  //   [
+  //     [-34.41574976988924, -63.48086012258717], [-40.66334448439318, -63.351433807537255], [-41.028627866312405, -62.713258315589606], [-40.66302566560311, -62.1860298585298], [-40.22832528829828, -62.4933472843853], [-38.80475819905606, -62.42746390351734], [-38.992835879111816, -61.85647460266186], [-38.701960517893156, -59.37477502228391], [-37.54402915318741, -57.19996628388273], [-36.31473985398963, -56.804089533974114], [-36.11976839727389, -57.353013944227456], [-35.42460236400931, -57.111453077005685], [-34.57880195342491, -58.29735393262863], [-33.99746923332372, -58.4514392294351], [-33.35805143728287, -60.25189423171088], [-33.68768039060563, -60.40563364969677], [-33.59623017001325, -60.86681731577235], [-34.41577238262803, -61.76721199167354]
+  //   ],
+  //   [
+  //     [-35.06591954211348, -58.756986908658575], [-35.424764923663766, -59.48170409820594], [-35.8710827283639, -60.27230466862123], [-36.18201848548881, -61.13976918338245], [-36.93202209402684, -60.250343541665245], [-36.81778764743727, -59.887984946891585], [-35.9867163841181, -59.03150099560834], [-35.44266547184034, -58.82287028952651]
+  //   ]
+  // ],{
+  //   color:'red',
+  //   fillColor:'blue',
+  //   fillOpacity:.6,
+  // }).addTo(map);
+
+  // metodo de subtracción con suma de poligono extra
+  let poligono = L.polygon([
+    [
+      //! aray forma principal
+      [
+        [-34.41574976988924, -63.48086012258717], [-40.66334448439318, -63.351433807537255], [-41.028627866312405, -62.713258315589606], [-40.66302566560311, -62.1860298585298], [-40.22832528829828, -62.4933472843853], [-38.80475819905606, -62.42746390351734], [-38.992835879111816, -61.85647460266186], [-38.701960517893156, -59.37477502228391], [-37.54402915318741, -57.19996628388273], [-36.31473985398963, -56.804089533974114], [-36.11976839727389, -57.353013944227456], [-35.42460236400931, -57.111453077005685], [-34.57880195342491, -58.29735393262863], [-33.99746923332372, -58.4514392294351], [-33.35805143728287, -60.25189423171088], [-33.68768039060563, -60.40563364969677], [-33.59623017001325, -60.86681731577235], [-34.41577238262803, -61.76721199167354]
+      ],
+      //! substracción
+      [
+        [-35.06591954211348, -58.756986908658575], [-35.424764923663766, -59.48170409820594], [-35.8710827283639, -60.27230466862123], [-36.18201848548881, -61.13976918338245], [-36.93202209402684, -60.250343541665245], [-36.81778764743727, -59.887984946891585], [-35.9867163841181, -59.03150099560834], [-35.44266547184034, -58.82287028952651]
+      ]
+    ],
+    //! suma forma secundaria
+    [
+      [-21.789969900274194, -66.25964596945389], [-22.12617137226227, -66.28160709640986], [-22.29905438599115, -66.70984907205147], [-22.60362000825057, -66.98436315900123], [-22.846788614782607, -67.20397442856104], [-22.98843675624309, -66.99534372247922], [-23.69443730471966, -67.22593555551703], [-24.146295034135004, -66.61102400074957], [-24.096166821629506, -66.36945160423377], [-23.472956518675876, -66.18278202510794], [-23.563607459660172, -65.95219019207015], [-24.01592087967161, -65.94120962859218], [-24.42664896859696, -65.48002596251658], [-24.54661065909471, -65.05178398687495], [-24.466648906485506, -64.45883355906348], [-24.236476270142933, -64.18431947211373], [-23.583743630820823, -64.17333890863573], [-23.52332585877856, -64.37098905123956], [-23.64413360302509, -64.45883355906348], [-23.45280339475969, -64.70040595557926], [-23.49310656481703, -64.90903666166109], [-22.61376065232421, -65.3482592007807], [-22.090533062704885, -65.19957771600806], [-22.09562218063092, -65.77056701686357], [-21.953057637856563, -65.91880462381644], [-21.912298590407065, -66.03410054033533], [-21.82054810421414, -66.10547420294225]
+    ]
+  ],{
+    color:'red',
+    fillColor:'blue',
+    fillOpacity:.6,
+  }).addTo(map);
+
+ 
+
+  map.fitBounds(poligono.getBounds());
+
+
+  function guardarPortapapeles(text) {
+    var textArea = document.createElement("textarea");
+    textArea.style.position = 'fixed';
+    textArea.style.top = 0;
+    textArea.style.left = 0;
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = 0;
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.background = 'transparent';
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+      console.log('Copying text command was ' + msg);
+    } catch (err) {
+      console.log('Oops, unable to copy');
+    }
+    document.body.removeChild(textArea);
+  }
+
+  function exportarArrayPoligono(arrayPoligono){
+    let poligonoArray = ``;
+    $.each(arrayPoligono, function (indP, objP) {
+      poligonoArray += `[${objP[0]}, ${objP[1]}], `;
+    });
+    poligonoArray = poligonoArray.slice(0, -2);
+    guardarPortapapeles(poligonoArray);
+  }
 
   map.on("keypress", function (e) {
     if(e.originalEvent.key == 'l'){
