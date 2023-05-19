@@ -10,10 +10,12 @@
         <link rel="stylesheet" href="src/plugins/Leaflet.PolylineMeasure.css">
         <link rel="stylesheet" href="src/plugins/easy-button.css">
         <link rel="stylesheet" href="src/plugins/leaflet-styleeditor/css/Leaflet.StyleEditor.css">
-        <link rel="stylesheet" href="src/css/font-awesome.min.css">
+        <!-- <link rel="stylesheet" href="src/css/font-awesome.min.css"> -->
+        <link rel="stylesheet" href="src/plugins/css/fontawesome.min.css">
         <link rel="stylesheet" href="src/plugins/leaflet.awesome-markers.css">
-        <link rel="stylesheet" href="src/plugins/leaflet-mapkey/MapkeyIcons.css">
-        <link rel="stylesheet" href="src/plugins/leaflet-mapkey/L.Icon.Mapkey.css">
+        <!-- <link rel="stylesheet" href="src/plugins/leaflet-mapkey/MapkeyIcons.css"> -->
+        <!-- <link rel="stylesheet" href="src/plugins/leaflet-mapkey/L.Icon.Mapkey.css"> -->
+        <link rel="stylesheet" href="src/plugins/leaflet-mapkey-icon/L.Icon.Mapkey.css">
         <link rel="stylesheet" href="src/plugins/MarkerCluster.css">
         <link rel="stylesheet" href="src/plugins/MarkerCluster.Default.css">
         
@@ -29,7 +31,8 @@
         <script src="src/plugins/leaflet.ajax.min.js"></script>
         <script src="src/plugins/leaflet.sprite.js"></script>
         <script src="src/plugins/leaflet.awesome-markers.min.js"></script>
-        <script src="src/plugins/leaflet-mapkey/L.Icon.Mapkey.js"></script>
+        <!-- <script src="src/plugins/leaflet-mapkey/L.Icon.Mapkey.js"></script> -->
+        <script src="src/plugins/leaflet-mapkey-icon/L.Icon.Mapkey.js"></script>
         <script src="src/plugins/leaflet.markercluster.js"></script>
         
 <!--    ***************  Begin Leaflet.Draw-->
@@ -128,13 +131,13 @@
                 fgpDrawnItems = new L.FeatureGroup();
                 fgpDrawnItems.addTo(mymap);
                 
-                lyrEagleNests = L.geoJSON.ajax('data/wildlife_eagle.geojson', {pointToLayer:returnEagleMarker}).addTo(mymap);
+                lyrEagleNests = L.geoJSON.ajax('data/localidades-censalesArg.geojson', {pointToLayer:returnEagleMarker}).addTo(mymap);
                 lyrEagleNests.on('data:loaded', function(){
                     mymap.fitBounds(lyrEagleNests.getBounds());
                 });
                 
                 lyrMarkerCluster = L.markerClusterGroup();
-                lyrRaptorNests = L.geoJSON.ajax('data/wildlife_raptor.geojson', {pointToLayer:returnRaptorMarker});
+                lyrRaptorNests = L.geoJSON.ajax('data/localidades-censalesArg.geojson', {pointToLayer:returnRaptorMarker});
                 lyrRaptorNests.on('data:loaded', function(){
                     lyrMarkerCluster.addLayer(lyrRaptorNests);
                     lyrMarkerCluster.addTo(mymap);
@@ -211,7 +214,7 @@
                 } else {
                     var clrNest = 'green';
                 }
-                return L.circle(latlng, {radius:804, color:clrNest,fillColor:'green', fillOpacity:0.5}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status);
+                return L.circle(latlng, {radius:804, color:clrNest,fillColor:'green', fillOpacity:0.0, opacity: 0.2}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status);
             }
             
             function returnRaptorMarker(json, latlng){
