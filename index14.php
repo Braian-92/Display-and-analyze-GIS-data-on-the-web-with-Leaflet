@@ -144,6 +144,7 @@
 
                 // let lyrBuffer;
                 // let jsonBuffer;
+                let clientLineBuffer = L.featureGroup();
                 let contornosArg = L.geoJSON.ajax('data/argentina.geojson', {
                     style:estiloContornoArg,
                     onEachFeature:procesarLineasContornoArgentina,
@@ -159,7 +160,7 @@
                             fillOpacity: 0
                         }
                     }).addTo(mymap);
-
+                    // clientLineBuffer.addTo(mymap);
                     contornosArg.bringToFont();
                 });
 
@@ -306,6 +307,14 @@
                 const prop = json.properties;
                 // console.log(prop);
                 lyr.bindTooltip(`<h6>Provincia: ${prop.NAME_1} - Localidad: ${prop.NAME_2}</h6>`);
+                // var jsonBuffer = turf.buffer(json, prop.row_with/1000, 'kilometers');
+                // var lyrBuffer = L.geoJSON(jsonBuffer, {
+                //     style : {
+                //         color : 'gray',
+                //         dashArray : '5,5',
+                //     }
+                // });
+                // clientLineBuffer.addLayer(lyrBuffer);
             }
 
             function filtroContornosArgentina(json){
